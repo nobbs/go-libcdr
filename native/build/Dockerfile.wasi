@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 # wasi-sdk toolchain for compiling the converter to wasm32-wasip1.
 # The two toolchain archives and the base image are integrity-pinned so an
-# upstream replacement cannot silently alter the committed module.
+# upstream replacement cannot silently alter the produced module.
 FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ARG TARGETARCH
 ARG WASI_SDK_VERSION=33
 ARG BINARYEN_VERSION=131
-RUN case "$TARGETARCH" in \
+RUN set -eu; \
+    case "$TARGETARCH" in \
       arm64) \
         wasi_arch=arm64; \
         wasi_sha256=4f98ee738c7abb45c81a94d1461fc53cc569d1cd01498951c8184d841a027844; \

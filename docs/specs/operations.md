@@ -1,7 +1,8 @@
 # Build and Operations Contract
 
-`cdr2svg.wasm` is a committed build artifact. This specification defines its
-production so that the source inputs and toolchain are independently verifiable.
+`cdr2svg.wasm` is the intended committed build artifact. This specification
+defines its production so that the source inputs and toolchain are independently
+verifiable.
 
 ## Pinned inputs
 
