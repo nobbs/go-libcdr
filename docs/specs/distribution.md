@@ -45,10 +45,9 @@ re-run it against that pull request's base branch as a manual recovery path when
 a release pull request has gone stale.
 
 No module version is published by this change. Once publication is enabled, tags
-will be created only from a state that passes the checks in
-[`testing.md`](testing.md). A published version cannot be withdrawn from the
-module proxy, so the first tag waits until the module path and package API are
-settled.
+will be created only from a state that passes the repository's required checks.
+A published version cannot be withdrawn from the module proxy, so the first tag
+waits until the module path and package API are settled.
 
 ## Third-party code
 
