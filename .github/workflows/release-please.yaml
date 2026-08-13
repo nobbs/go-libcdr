@@ -1,0 +1,46 @@
+name: Release Please
+
+# Pushing to the default branch is the normal trigger: it both opens or updates
+# the release pull request and, because merging that pull request is itself a
+# push, cuts the release and tag.
+#
+# The `release-please:force-run` label is a manual recovery trigger for the case
+# where a release pull request has gone stale or a delivery was missed. Every
+# other pull request event is ignored.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - labeled
+
+concurrency:
+  group: release-please-${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || github.ref_name }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+
+    if: >-
+      github.event_name == 'push' ||
+      github.event.label.name == 'release-please:force-run'
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Create or update the release pull request
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          # A label-triggered run targets the pull request's base branch; a push
+          # targets the branch that was pushed.
+          target-branch: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || github.ref_name }}

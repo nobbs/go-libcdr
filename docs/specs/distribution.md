@@ -28,10 +28,10 @@ says so.
 
 ## Versioning
 
-When release automation is introduced, versions will be derived from commit
-history by Release Please. It will read Conventional Commits and open a release
-pull request carrying the version bump and changelog entry. Merging that pull
-request will publish the tag; nothing is tagged by hand.
+Versions are derived from commit history by Release Please. It reads
+Conventional Commits and opens a release pull request carrying the version bump
+and changelog entry. Merging that pull request publishes the tag; nothing is
+tagged by hand.
 
 `feat` produces a minor bump, `fix` and `deps` a patch. While the module is
 below `v1`, a breaking change is a minor bump rather than a major one, so the
@@ -48,10 +48,10 @@ is merged. Applying the `release-please:force-run` label to a pull request will
 re-run it against that pull request's base branch as a manual recovery path when
 a release pull request has gone stale.
 
-No module version is published by this change. Once publication is enabled, tags
-will be created only from a state that passes the repository's required checks.
-A published version cannot be withdrawn from the module proxy, so the first tag
-waits until the module path and package API are settled.
+No module version has been published yet. Tags are created only from a state
+that passes the repository's required checks. A published version cannot be
+withdrawn from the module proxy, so the first tag waits until the module path
+and package API are settled.
 
 ## Third-party code
 
