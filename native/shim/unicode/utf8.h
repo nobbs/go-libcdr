@@ -1,4 +1,9 @@
-/* Minimal stand-in for ICU's utf8.h -- see utypes.h for rationale. */
+/*
+ * Minimal stand-in for ICU's utf8.h -- see utypes.h for rationale.
+ *
+ * U8_APPEND_UNSAFE is derived from ICU's utf8.h. It is distributed under the
+ * ICU 1.8.1-57.1 licence; see native/shim/NOTICE.
+ */
 #ifndef CDRWASM_SHIM_UTF8_H
 #define CDRWASM_SHIM_UTF8_H
 
