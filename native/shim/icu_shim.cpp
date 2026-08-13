@@ -48,7 +48,7 @@ UConverter *ucnv_open(const char *converterName, UErrorCode *err)
   if (!converter)
   {
     if (err)
-      *err = U_ILLEGAL_ARGUMENT_ERROR;
+      *err = U_MEMORY_ALLOCATION_ERROR;
     return nullptr;
   }
   converter->encoding =
@@ -112,7 +112,7 @@ UChar32 ucnv_getNextUChar(UConverter *converter, const char **source,
 UCharsetDetector *ucsdet_open(UErrorCode *status)
 {
   if (status)
-    *status = U_ZERO_ERROR;
+    *status = U_UNSUPPORTED_ERROR;
   return nullptr;
 }
 
