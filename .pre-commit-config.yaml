@@ -1,0 +1,52 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "v6.0.0"
+    hooks:
+      - id: check-added-large-files
+        # cdr2svg.wasm is a deliberate ~1 MB build artifact; every other large
+        # file should still be questioned.
+        exclude: ^cdr2svg\.wasm$
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args:
+          - --fix=lf
+      - id: trailing-whitespace
+        args:
+          - --markdown-linebreak-ext=md
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.23.1
+    hooks:
+      - id: markdownlint-cli2
+        exclude: ^CHANGELOG\.md$
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      - id: go-format
+        name: Go format and lint fixes
+        entry: mise run fix
+        language: system
+        types:
+          - go
+        pass_filenames: false
+      - id: go-tidy
+        name: go mod tidy
+        entry: go mod tidy
+        language: system
+        files: ^go\.(mod|sum)$
+        pass_filenames: false
+      - id: wasm-exit-codes
+        name: Exit codes stay in sync with the Go error taxonomy
+        entry: native/build/check-exit-codes.sh
+        language: system
+        files: ^(native/cdr2svg\.cpp|libcdr\.go)$
+        pass_filenames: false

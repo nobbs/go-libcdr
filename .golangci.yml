@@ -1,0 +1,82 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    # Correctness
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - ineffassign
+    - bodyclose
+    - noctx
+    - errorlint
+    - nilerr
+    - contextcheck
+    - durationcheck
+    - forcetypeassert
+    - copyloopvar
+    - reassign
+
+    # Bugs and footguns
+    - gosec
+    - gocritic
+    - unparam
+    - unconvert
+    - wastedassign
+    - makezero
+    - fatcontext
+    - exhaustive
+    - sqlclosecheck
+
+    # Style and hygiene
+    - gocognit
+    - misspell
+    - revive
+    - usestdlibvars
+    - wsl_v5
+    - asciicheck
+    - bidichk
+    - nolintlint
+    - modernize
+
+    # Tests and observability
+    - testifylint
+    - thelper
+    - paralleltest
+    - loggercheck
+
+  settings:
+    errcheck:
+      check-type-assertions: true
+    gocognit:
+      min-complexity: 20
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - style
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+    revive:
+      rules:
+        - name: unused-parameter
+          disabled: true
+
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - gosec
+          - noctx
+
+formatters:
+  enable:
+    - gofumpt
+  settings:
+    gofumpt:
+      extra-rules: true
+
+issues:
+  max-same-issues: 0
