@@ -1,0 +1,93 @@
+# mise prepends each tool's bin directory to PATH in declaration order, so `go`
+# is declared last: a Go toolchain's bin directory often accumulates binaries
+# from `go install`, and any of them would otherwise shadow the pinned versions
+# above.
+[tools]
+golangci-lint = "2.12.2"
+gotestsum = "1.13.0"
+prek = "0.4.13"
+"go:golang.org/x/vuln/cmd/govulncheck" = "1.6.0"
+go = "1.26.5"
+
+[env]
+# Toolchain image for rebuilding the WebAssembly module.
+WASI_IMAGE = "wasi-sdk:33"
+
+[tasks.check]
+description = "Everything expected to pass before reporting a change complete"
+depends = ["lint", "tidy-check", "test", "race-test", "security", "hooks"]
+
+[tasks.ci-check]
+description = "Aggregate check for CI, with coverage instead of a plain test run"
+depends = ["lint", "tidy-check", "coverage", "race-test", "security"]
+
+[tasks.sync]
+description = "Download module dependencies"
+run = "go mod download"
+
+[tasks.update-go-deps]
+description = "Update Go dependencies and tidy"
+run = '''
+go get -u ./...
+go mod tidy
+'''
+
+[tasks.tidy-check]
+description = "Fail if go.mod or go.sum is not tidy"
+run = '''
+go mod tidy
+git diff --exit-code -- go.mod go.sum
+'''
+
+[tasks.test]
+description = "Run tests"
+run = "go test ./..."
+
+[tasks.coverage]
+description = "Run tests with coverage and a JUnit report"
+run = "gotestsum --junitfile junit.xml -- -coverprofile=coverage.out ./..."
+
+[tasks.race-test]
+description = "Run tests under the race detector"
+run = "go test -race ./..."
+
+[tasks.security]
+description = "Scan dependencies for known vulnerabilities"
+run = "govulncheck ./..."
+
+[tasks.format]
+description = "Format Go sources"
+run = "golangci-lint fmt --config=.golangci.yml"
+
+[tasks.lint]
+description = "Lint Go sources"
+run = "golangci-lint run --config=.golangci.yml ./..."
+
+[tasks.lint-fix]
+description = "Lint and apply fixes"
+run = "golangci-lint run --fix --config=.golangci.yml ./..."
+
+[tasks.fix]
+description = "Format and apply lint fixes"
+depends = ["format", "lint-fix"]
+
+[tasks.hooks]
+description = "Run pre-commit hooks against all files"
+run = "prek run --all-files"
+
+[tasks.hooks-install]
+description = "Install the git pre-commit hook"
+run = "prek install"
+
+[tasks.wasm-fetch]
+description = "Download the pinned upstream sources for the WebAssembly build"
+run = "sh native/build/fetch.sh"
+
+[tasks.wasm-image]
+description = "Build the wasi-sdk toolchain image"
+run = "docker build -f native/build/Dockerfile.wasi -t $WASI_IMAGE native/build/"
+
+[tasks.wasm]
+description = "Rebuild cdr2svg.wasm; see docs/specs/operations.md for when this is warranted"
+depends = ["wasm-fetch", "wasm-image"]
+run = 'docker run --rm -v "$PWD":/work $WASI_IMAGE sh native/build/build.sh'

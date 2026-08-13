@@ -8,6 +8,10 @@ permanent: it is recorded in the `go.mod` of every dependent, and the module
 proxy caches published versions immutably. Changing it is not a rename; it
 abandons the module and starts another.
 
+The package requires Go 1.26 or later. `go.mod` suggests the current Go 1.26.5
+patch toolchain for development and reproducible checks; supported older patch
+releases remain a Go distribution decision rather than an application fallback.
+
 ## The embedded artifact
 
 `cdr2svg.wasm` is committed at the repository root so the forthcoming Go package
