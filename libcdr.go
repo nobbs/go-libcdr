@@ -145,10 +145,6 @@ func (c *Converter) Convert(ctx context.Context, document []byte) ([]byte, error
 		defer func() { _ = module.Close(context.WithoutCancel(ctx)) }()
 	}
 
-	if ctxErr := ctx.Err(); ctxErr != nil {
-		return nil, fmt.Errorf("libcdr: conversion aborted: %w", ctxErr)
-	}
-
 	if stdout.overflowed {
 		return nil, fmt.Errorf("%w: limit is %d bytes", ErrOutputTooLarge, maxOutputBytes)
 	}

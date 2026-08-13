@@ -45,7 +45,7 @@ run = "go test ./..."
 
 [tasks.coverage]
 description = "Run tests with coverage and a JUnit report"
-run = "gotestsum --junitfile junit.xml -- ./... -coverprofile=coverage.out"
+run = "gotestsum --junitfile junit.xml -- -coverprofile=coverage.out ./..."
 
 [tasks.race-test]
 description = "Run tests under the race detector"
