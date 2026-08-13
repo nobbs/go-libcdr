@@ -1,0 +1,54 @@
+# syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+# wasi-sdk toolchain for compiling the converter to wasm32-wasip1.
+# The two toolchain archives and the base image are integrity-pinned so an
+# upstream replacement cannot silently alter the produced module.
+FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl make pkg-config tar xz-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG TARGETARCH
+ARG WASI_SDK_VERSION=33
+ARG BINARYEN_VERSION=131
+RUN set -eu; \
+    case "$TARGETARCH" in \
+      arm64) \
+        wasi_arch=arm64; \
+        wasi_sha256=4f98ee738c7abb45c81a94d1461fc53cc569d1cd01498951c8184d841a027844; \
+        binaryen_arch=aarch64; \
+        binaryen_sha256=ba991f677edd9a21d2bc96c0144bc8ac5b112d4d98a3eb266e075e22e557df2a ;; \
+      amd64) \
+        wasi_arch=x86_64; \
+        wasi_sha256=0ba8b5bfaeb2adf3f29bab5841d76cf5318ab8e1642ea195f88baba1abd47bce; \
+        binaryen_arch=x86_64; \
+        binaryen_sha256=b5bf1f0eaf17c63ee588ff7a5954dc8f6ce2c26989051c66f24dfe9ece3e46db ;; \
+      *) echo "unsupported build architecture: $TARGETARCH" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL --retry 5 --retry-delay 3 \
+      -o /tmp/wasi-sdk.tar.gz \
+      "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_SDK_VERSION}/wasi-sdk-${WASI_SDK_VERSION}.0-${wasi_arch}-linux.tar.gz"; \
+    printf '%s  %s\n' "$wasi_sha256" /tmp/wasi-sdk.tar.gz | sha256sum -c -; \
+    mkdir -p /opt/wasi-sdk; \
+    tar xzf /tmp/wasi-sdk.tar.gz -C /opt/wasi-sdk --strip-components=1; \
+    rm /tmp/wasi-sdk.tar.gz; \
+    curl -fsSL --retry 5 --retry-delay 3 \
+      -o /tmp/binaryen.tar.gz \
+      "https://github.com/WebAssembly/binaryen/releases/download/version_${BINARYEN_VERSION}/binaryen-version_${BINARYEN_VERSION}-${binaryen_arch}-linux.tar.gz"; \
+    printf '%s  %s\n' "$binaryen_sha256" /tmp/binaryen.tar.gz | sha256sum -c -; \
+    mkdir -p /opt/binaryen; \
+    tar xzf /tmp/binaryen.tar.gz -C /opt/binaryen --strip-components=1; \
+    rm /tmp/binaryen.tar.gz
+
+# libcdr and librevenge use only Boost headers. Copy them to an isolated prefix
+# so the compiler cannot fall back to headers installed in the container.
+RUN apt-get update && apt-get install -y --no-install-recommends libboost-dev \
+    && mkdir -p /opt/boost/include \
+    && cp -r /usr/include/boost /opt/boost/include/ \
+    && apt-get purge -y libboost-dev \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV WASI_SDK_PATH=/opt/wasi-sdk
+ENV PATH="/opt/wasi-sdk/bin:/opt/binaryen/bin:${PATH}"
+WORKDIR /work
