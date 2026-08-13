@@ -1,0 +1,13 @@
+# Upstream sources: re-fetch with native/build/fetch.sh
+native/build/libcdr-*/
+native/build/librevenge-*/
+native/build/lcms2-*/
+native/build/zlib-*/
+native/build/*.tar.*
+
+# Local test fixtures are not redistributable; see testdata/README.md
+testdata/*.cdr
+
+# Test and coverage output
+coverage.out
+junit.xml
