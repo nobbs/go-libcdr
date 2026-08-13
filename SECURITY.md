@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-No version has been released yet. The current `main` branch is the supported
+`v0.1.0` is the supported release. The current `main` branch is the supported
 development version.
 
 ## Reporting a vulnerability
