@@ -4,6 +4,14 @@ Tests run without network access, without Docker, and without the WebAssembly
 toolchain. They exercise the committed module, so a clone plus `go test ./...`
 is sufficient.
 
+## Continuous integration
+
+GitHub Actions runs `mise run ci-check` for every pull request and push to
+`main`. That command checks linting, module tidiness, normal and race-tested
+behavior, coverage generation, and known vulnerabilities with the pinned
+development tools. It does not rebuild the WebAssembly module: that is a
+deliberate manual verification described below.
+
 ## Fixtures
 
 CorelDRAW documents are generally third-party artwork, so `testdata/` is not
