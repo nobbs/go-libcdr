@@ -1,8 +1,7 @@
 // Minimal CorelDRAW -> SVG: libcdr parses, librevenge emits. No Inkscape.
 //
-// Exit codes are distinct so the calling Go package can tell "this is not a
-// CorelDRAW file" (answer 415) from "it is one and parsing failed" (answer 500).
-// Keep these in sync with the constants in libcdr.go.
+// Exit codes distinguish unsupported input from conversion failures. They are
+// part of the host-facing error contract.
 #include <librevenge/librevenge.h>
 #include <librevenge-generators/librevenge-generators.h>
 #include <librevenge-stream/librevenge-stream.h>
