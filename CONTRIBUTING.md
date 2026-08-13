@@ -51,5 +51,11 @@ Use an allowed type such as `feat`, `fix`, `deps`, `docs`, `test`, `build`, or
 `deps` for dependency updates. See the [versioning contract](docs/specs/distribution.md)
 for how those types affect releases.
 
+`main` requires signed commits and linear history. If a branch needs rebasing,
+rebase it locally with signing enabled, then update the rewritten branch with
+`git push --force-with-lease`. Do not use GitHub's native rebase for such a
+pull request: it can rewrite commits without a signature. This also applies to
+generated Release Please pull requests.
+
 Please report vulnerabilities privately under the [security policy](SECURITY.md),
 not in a public issue.
