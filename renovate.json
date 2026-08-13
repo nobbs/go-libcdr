@@ -1,0 +1,44 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":enablePreCommit"
+  ],
+  "timezone": "Europe/Berlin",
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 1,
+  "dependencyDashboard": true,
+  "semanticCommits": "enabled",
+  "semanticCommitType": "deps",
+  "packageRules": [
+    {
+      "description": "Keep Go module files tidy after dependency updates",
+      "matchManagers": [
+        "gomod"
+      ],
+      "postUpdateOptions": [
+        "gomodTidy"
+      ]
+    },
+    {
+      "description": "Classify build and automation updates separately from module changes",
+      "matchManagers": [
+        "github-actions",
+        "mise",
+        "pre-commit"
+      ],
+      "semanticCommitType": "ci"
+    },
+    {
+      "description": "Require an explicit dashboard approval for major upgrades",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    }
+  ]
+}
