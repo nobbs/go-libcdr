@@ -142,7 +142,7 @@ func (c *Converter) Convert(ctx context.Context, document []byte) ([]byte, error
 
 	module, err := c.runtime.InstantiateModule(ctx, c.compiled, config)
 	if module != nil {
-		defer func() { _ = module.Close(ctx) }()
+		defer func() { _ = module.Close(context.WithoutCancel(ctx)) }()
 	}
 
 	if ctxErr := ctx.Err(); ctxErr != nil {
@@ -179,16 +179,26 @@ func convertError(ctx context.Context, err error, stderr []byte) error {
 
 		switch exit.ExitCode() {
 		case exitUnsupported:
-			return fmt.Errorf("%w: %s", ErrUnsupportedDocument, detail)
+			return errorWithDetail(ErrUnsupportedDocument, detail)
 		case exitParseFailed:
-			return fmt.Errorf("%w: %s", ErrParseFailed, detail)
+			return errorWithDetail(ErrParseFailed, detail)
 		default:
-			return fmt.Errorf("libcdr: converter exited with code %d: %s",
-				exit.ExitCode(), detail)
+			return errorWithDetail(
+				fmt.Errorf("libcdr: converter exited with code %d", exit.ExitCode()),
+				detail,
+			)
 		}
 	}
 
 	return fmt.Errorf("libcdr: running the converter: %w", err)
+}
+
+func errorWithDetail(err error, detail []byte) error {
+	if len(detail) == 0 {
+		return err
+	}
+
+	return fmt.Errorf("%w: %s", err, detail)
 }
 
 type limitedBuffer struct {
