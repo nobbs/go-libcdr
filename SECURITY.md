@@ -1,6 +1,6 @@
 # Security Policy
 
-## Supported version
+## Supported versions
 
 No version has been released yet. The current `main` branch is the supported
 development version.
