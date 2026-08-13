@@ -48,10 +48,10 @@ is merged. Applying the `release-please:force-run` label to a pull request will
 re-run it against that pull request's base branch as a manual recovery path when
 a release pull request has gone stale.
 
-No module version has been published yet. Tags are created only from a state
-that passes the repository's required checks. A published version cannot be
-withdrawn from the module proxy, so the first tag waits until the module path
-and package API are settled.
+The first module version, `v0.1.0`, is published. Tags are created only from a
+state that passes the repository's required checks. A published version cannot
+be withdrawn from the module proxy, so the module path and package API must be
+settled before each release.
 
 ## Third-party code
 
