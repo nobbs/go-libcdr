@@ -1,6 +1,6 @@
 #!/bin/sh
 # Download the upstream sources compiled into cdr2svg.wasm.
-# They are deliberately not vendored; run this once before build.sh.
+# They are deliberately not vendored.
 set -eu
 
 cd "$(dirname "$0")"
@@ -16,17 +16,25 @@ fetch() {
   fi
 
   echo "fetching $directory"
-  curl -fsSL --retry 5 --retry-delay 3 --retry-all-errors "$url" -o "$archive"
-  if command -v sha256sum >/dev/null 2>&1; then
-    printf '%s  %s\n' "$checksum" "$archive" | sha256sum -c -
-  elif command -v shasum >/dev/null 2>&1; then
-    printf '%s  %s\n' "$checksum" "$archive" | shasum -a 256 -c -
-  else
-    echo "fetch: need sha256sum or shasum to verify $archive" >&2
-    exit 1
-  fi
-  tar xf "$archive"
-  rm -f "$archive"
+  (
+    trap 'rm -f "$archive"' 0
+    trap 'exit 1' 1 2 15
+
+    curl -fsSL --retry 5 --retry-delay 3 "$url" -o "$archive"
+    if command -v sha256sum >/dev/null 2>&1; then
+      printf '%s  %s\n' "$checksum" "$archive" | sha256sum -c -
+    elif command -v shasum >/dev/null 2>&1; then
+      printf '%s  %s\n' "$checksum" "$archive" | shasum -a 256 -c -
+    else
+      echo "fetch: need sha256sum or shasum to verify $archive" >&2
+      exit 1
+    fi
+    tar xf "$archive"
+    [ -d "$directory" ] || {
+      echo "fetch: archive did not extract $directory" >&2
+      exit 1
+    }
+  )
 }
 
 fetch https://dev-www.libreoffice.org/src/libcdr/libcdr-0.1.7.tar.bz2 \
