@@ -7,7 +7,7 @@ golangci-lint = "2.12.2"
 gotestsum = "1.13.0"
 prek = "0.4.13"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1.6.0"
-go = "1.26.5"
+go = "1.26.6"
 
 [env]
 # Toolchain image for rebuilding the WebAssembly module.
