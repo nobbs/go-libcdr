@@ -8,8 +8,8 @@ permanent: it is recorded in the `go.mod` of every dependent, and the module
 proxy caches published versions immutably. Changing it is not a rename; it
 abandons the module and starts another.
 
-The package requires Go 1.25 or later, matching the floor of its only
-dependency. The floor is deliberately the oldest release the code compiles
+The package requires Go 1.25 or later, matching the floor of wazero, its only
+direct dependency. The floor is deliberately the oldest release the code compiles
 against rather than the newest available, because for a library it is a tax on
 every consumer. `go.mod` additionally names a `toolchain` for development and
 reproducible checks; that is a development convenience and does not raise the
