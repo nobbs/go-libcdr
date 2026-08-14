@@ -10,7 +10,7 @@ toolchain is needed by users of the package.
 
 ## Install
 
-The package requires Go 1.26 or later.
+The package requires Go 1.25 or later.
 
 ```sh
 go get github.com/nobbs/go-libcdr

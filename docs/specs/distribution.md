@@ -8,9 +8,12 @@ permanent: it is recorded in the `go.mod` of every dependent, and the module
 proxy caches published versions immutably. Changing it is not a rename; it
 abandons the module and starts another.
 
-The package requires Go 1.26 or later. `go.mod` suggests the current Go 1.26.5
-patch toolchain for development and reproducible checks; supported older patch
-releases remain a Go distribution decision rather than an application fallback.
+The package requires Go 1.25 or later, matching the floor of its only
+dependency. The floor is deliberately the oldest release the code compiles
+against rather than the newest available, because for a library it is a tax on
+every consumer. `go.mod` additionally names a `toolchain` for development and
+reproducible checks; that is a development convenience and does not raise the
+requirement placed on dependents.
 
 ## The embedded artifact
 
