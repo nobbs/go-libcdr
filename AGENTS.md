@@ -62,6 +62,6 @@ These are easy to break and cheap to respect:
 
 Run `mise run check` before reporting completion and report what actually
 passed. Never describe an unrun check as passing, and state plainly when
-something is skipped: fixture tests skip on a clean checkout because
-`testdata/` is empty, so a green run does not by itself prove that conversion
+something is skipped: no `.cdr` fixtures are committed, so on a clean checkout
+the fixture tests skip and a green run does not by itself prove that conversion
 of a real document still works.
