@@ -1,9 +1,8 @@
 # Repository Guidance
 
 Read [`CONTRIBUTING.md`](CONTRIBUTING.md) first: it defines setup, the required
-`mise run check` gate, fixture handling, pull-request conventions, and the
-signed-commit and linear-history rules. This file adds only what an agent needs
-on top of that.
+`mise run check` gate, fixture handling, and pull-request conventions. This file
+adds only what an agent needs on top of that.
 
 ## Working Model
 
